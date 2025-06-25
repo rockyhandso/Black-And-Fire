@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>2D Gravity Platformer</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h2>🕹️ 2D Gravity Game</h2>
+
+  <div id="game-container">
+  <div id="game-world">
+    <div id="ground"></div>
+    <div id="player">
+  <div id="shield" class="shield-front"></div>
+  </div>
+    <div id="enemy"></div>
+    <div id="attack"></div>
+  </div>
+  </div>
+
+ <div id="controls">
+  <button onclick="move('left')">⬅️</button>
+  <button onclick="jump()">🔼 Jump</button>
+  <button onclick="move('right')">➡️</button>
+</div>
+<div id="shield-controls">
+  <p>Shield Control:</p>
+  <button onclick="setShield('left')">⬅️</button>
+  <button onclick="setShield('up')">⬆️</button>
+  <button onclick="setShield('down')">⬇️</button>
+  <button onclick="setShield('right')">➡️</button>
+</div>
+
+<div id="gameButtons">
+  <button id="startBtn" onclick="startGame()">▶️ Start</button>
+  <button id="restartBtn" onclick="restartGame()" style="display: none;">🔁 Restart</button>
+</div>
+
+  <script src="script.js"></script>
+</body>
+</html>
