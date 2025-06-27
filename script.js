@@ -3,8 +3,8 @@ const enemy = document.getElementById('enemy');
 const attack = document.getElementById('attack');
 const shield = document.getElementById("shield");
 
-let x = 100;
-let y = 320;
+let x = 300; //left me distance 
+let y = 220; //top se girane ki height 
 let velocityY = 0;
 let isJumping = false;
 let isReflected = false;
@@ -14,7 +14,7 @@ let blastDirection = null; // fixed direction at fire time
 let blastInProgress = false; // ✅ Declare it globally
 
 const gravity = 0.8;
-const groundY = 360;
+const groundY = setResponsiveGround(); // player ka position 
 let moveInterval = null;
 let shieldDirectionLocked = false;
 let gameStarted = false; // game lock default 
@@ -52,6 +52,19 @@ function jump() {
     velocityY = -15;
     isJumping = true;
   }
+}
+
+// Screen size check
+function setResponsiveGround() {
+  const screenWidth = window.innerWidth;
+
+  // Mobile screen ke liye
+  if (screenWidth <= 768) {
+    return 360;
+  }
+
+  // Desktop screen ke liye
+  return 1040;
 }
 
 // ✅ Gravity
@@ -105,6 +118,12 @@ function checkAttackCollision(posX, posY) {
   document.body.appendChild(msg);
   
   gameOver = true;
+  
+  document.getElementById("bg-music").pause(); //background music end
+  
+  // 🔊 Play game over sound
+  const gameoverSound = document          .getElementById("gameover-sound");
+  gameoverSound.play();
   
   // Stop attack loop
   if (attackInterval) {
@@ -262,6 +281,12 @@ function startGame() {
   if (gameOver || attackInterval) return;
   
   gameStarted = true;
+  
+  // 🔊 Play background music
+  const bgMusic = document.getElementById("bg-music");
+  if (bgMusic.paused) {
+    bgMusic.play().catch(e => console.log("Autoplay blocked:", e));
+  }
 
   // Hide start button, show nothing (restart only visible on gameover)
   document.getElementById('startBtn').style.display = 'none';
