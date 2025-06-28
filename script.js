@@ -13,8 +13,16 @@ let lastShieldDirection = "right"; // default direction
 let blastDirection = null; // fixed direction at fire time
 let blastInProgress = false; // ✅ Declare it globally
 
+//coin logic
+let coins = [];
+let score = 0;
+let coinInterval = null;//stop coin
+
 const gravity = 0.8;
-const groundY = setResponsiveGround(); // player ka position 
+let groundY;
+window.onload = () => {
+  groundY = setResponsiveGround();
+}; // player ka position 
 let moveInterval = null;
 let shieldDirectionLocked = false;
 let gameStarted = false; // game lock default 
@@ -77,6 +85,7 @@ function applyGravity() {
     isJumping = false;
   }
   updatePosition();
+  checkCoinCollision();
   requestAnimationFrame(applyGravity);
 }
 applyGravity();
@@ -130,6 +139,16 @@ function checkAttackCollision(posX, posY) {
     clearInterval(attackInterval);
     attackInterval = null;
   }
+  
+  // Stop coin spawning
+  if (coinInterval) {
+    clearInterval(coinInterval);
+    coinInterval = null;
+  }
+
+  // Remove all coins
+  document.querySelectorAll('.coin').forEach(c => c.remove());
+  coins = [];
   
   // Show Restart button
   document.getElementById('restartBtn').style.display = 'inline-block';
@@ -292,6 +311,9 @@ function startGame() {
   document.getElementById('startBtn').style.display = 'none';
   document.getElementById('restartBtn').style.display = 'none';
 
+  //coinInterval = setInterval(spawnCoin, 3000); // spawn every 3 seconds
+  
+  spawnCoin();
   // Start attacks
   attackInterval = setInterval(launchAttack, 1500);
 }
@@ -299,6 +321,8 @@ function startGame() {
 function restartGame() {
   gameStarted = false;
   // Reset all game states
+  score = 0;
+  document.getElementById("score").innerText = 0;
   x = 100;
   y = 320;
   velocityY = 0;
@@ -368,6 +392,7 @@ function setShield(direction) {
     blastInProgress = true;
   // 🔥 Fire when shield is set
   fireBlast();
+  }
 }
 
 function fireBlast() {
@@ -470,4 +495,47 @@ document.addEventListener("keydown", (e) => {
       setShield("down");
       break;
   }
-})};
+});
+
+
+
+function updateScore(amount) {
+  score += amount;
+  document.getElementById("score").innerText = score;
+}
+
+function spawnCoin() {
+  const coin = document.createElement("div");
+  coin.classList.add("coin");
+
+  const coinX = Math.floor(Math.random() * 550);
+  const coinY = groundY - 20; // just above ground
+
+  coin.style.left = coinX + "px";
+  coin.style.top = coinY + "px";
+
+  document.getElementById("coin-container").appendChild(coin);
+  coins.push(coin);
+}
+
+function checkCoinCollision() {
+  const playerBox = player.getBoundingClientRect();
+  coins.forEach((coin, index) => {
+    const coinBox = coin.getBoundingClientRect();
+    if (intersect(playerBox, coinBox)) {
+      updateScore(1); // 🪙+1 points per coin
+      
+      // 🔊 Play coin sound
+      const coinSound = document.getElementById("coin-sound");
+      coinSound.currentTime = 0;
+      coinSound.play();
+      
+      coin.remove();
+      coins.splice(index, 1);
+      
+      // 🪙 Spawn next coin after current one is collected
+      spawnCoin();
+      
+    }
+  });
+}
