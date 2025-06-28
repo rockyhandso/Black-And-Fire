@@ -147,6 +147,19 @@ body {
   }
 }
 
+.coin {
+  width: 20px;
+  height: 20px;
+  background: gold;
+  border-radius: 50%;
+  position: absolute;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotateY(0deg); }
+  100% { transform: rotateY(360deg); }
+}
 @media (min-width: 768px) {
   #player{
   
@@ -160,4 +173,13 @@ body {
     height: 100px;
   }
 
+}
+
+#score-board {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  font-size: 20px;
+  color: white;
+  z-index: 1000;
 }
